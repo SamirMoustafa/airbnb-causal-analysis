@@ -11,3 +11,5 @@ The costs of advertising the property should also be added in,
 along with appraisal costs and the commission to the real estate agent or broker.
 
 + Attribute Information (in order) https://scikit-learn.org/stable/datasets/index.html#boston-dataset
+
+7. we can do pip install -r requirements.txt for app in our project because our code should be beatifull
