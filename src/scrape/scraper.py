@@ -106,6 +106,6 @@ if __name__ == '__main__':
     scraper = AirbnbLinksScraper()
     scraper(AIRBNB_DATASET_FILENAME)
     link = find_airbnb_link(target_info['country'], target_info['location'],
-                            target_info['city'], target_info['date'])
+                            target_info['city'],    target_info['date'])
 
     download_url(link, output_file_name)
