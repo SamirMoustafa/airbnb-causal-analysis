@@ -3,6 +3,8 @@ from sklearn.preprocessing import LabelEncoder
 
 from src.nlp.tf_idf import tfidf_tsne
 
+numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+
 
 def airbnb_data_clean(df):
     """
@@ -11,6 +13,12 @@ def airbnb_data_clean(df):
     :param df: airbnb data-frame that contains decried features
     :return: clean and numerical version of the data-frame
     """
+
+    # skip cleaning if the provided data-frame contains numeric values
+    df_types = df.select_dtypes(include=numerics)
+    if df_types.shape[1] == df.shape[1]:
+        return df
+
     # Encode target labels with value between 0 and n_classes-1 for unique text
     le = LabelEncoder()
 

@@ -1,6 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.manifold import TSNE
 
+
 def tfidf_tsne(X, max_dim=50, map_dim=2):
     vectoring = TfidfVectorizer(analyzer='char_wb', max_features=max_dim)
     vectoring.fit(X)

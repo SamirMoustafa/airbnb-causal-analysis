@@ -1,9 +1,40 @@
 import os
 import csv
 
+import numpy as np
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import pylab
+
+
+def calculate_monthly(P, mortgage_rate, num_years):
+    n = num_years * 12
+    monthly_i = mortgage_rate / 12
+    numerator = monthly_i * (1 + monthly_i) ** n
+    denominator = ((1 + monthly_i) ** n) - 1
+    return P * numerator / denominator
+
+
+def airbnb_income(price, inflation_rate, num_years):
+    total = 0
+    for year_number in range(num_years):
+        curr_inflation = (1 + inflation_rate) ** year_number
+        total += (price * curr_inflation) * 12
+    return total
+
+
+def roi(z_estimate, inflation_rate, mortgage_rate, num_years, rental_price, down_payment_percent):
+    down_payment = z_estimate * down_payment_percent
+    P = z_estimate * (1 - down_payment_percent)
+
+    incurred_cost = calculate_monthly(P, mortgage_rate, num_years) * 12 * num_years + down_payment
+
+    income = airbnb_income(price=rental_price,
+                           inflation_rate=inflation_rate,
+                           num_years=num_years)
+
+    return (income - incurred_cost) / incurred_cost
 
 
 def save_to_file(path, dict_saver):
@@ -48,6 +79,10 @@ def df2graph(df, threshold):
             key2 = df.columns[j]
             if key1 != key2 and values > threshold or values < -threshold:
                 G.add_edges_from([(key1, key2)], weight=round(values, 2))
+
+            if (key1 is 'roi' or key2 is 'roi') and key1 != key2 and values > threshold//10 or values < -threshold//10:
+                G.add_edges_from([(key1, key2)], weight=round(values, 2))
+
     return G
 
 
@@ -59,5 +94,11 @@ def plot_graph(G):
     random_pos = nx.random_layout(G, seed=0)
     pos = nx.spring_layout(G, pos=random_pos)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    nx.draw_networkx(G, pos, node_size=3000, with_label=True)
+    nx.draw_networkx(G, pos, node_size=3000)
     pylab.show()
+
+
+def random_z_estimate(price_col):
+    mean = np.mean(price_col) // 10
+    std = np.std(price_col)
+    return np.random.normal(mean, std, price_col.shape[0])
