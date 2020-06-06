@@ -8,6 +8,7 @@ bash  run.sh
 `
 
 > This example will scrape and clean and plot `berlin` city
+>
 > To scrape any city you want you can use the following command
 
 `
